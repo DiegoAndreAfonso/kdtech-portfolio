@@ -5,13 +5,21 @@ Site em português com React, TypeScript e Vite, página principal e páginas in
 ## Executar
 
 ```bash
-npm install
+npm ci
 npm run dev
 npm run build
 npm run preview
 ```
 
 O build de produção fica em `dist/`. O comando de preview permite conferir essa versão localmente.
+
+## Trabalhar em equipe
+
+A branch principal é `main`. Depois de clonar o repositório, execute `npm ci` para instalar as versões registradas no lockfile.
+
+Crie uma branch com um nome relacionado ao trabalho, como `feat/conteudo-projetos` ou `fix/menu-mobile`. Antes de enviar alterações, execute `npm run build` e abra um pull request para `main`. O repositório verifica o build automaticamente em pushes e pull requests.
+
+Não versione `node_modules/`, `dist/`, arquivos `.env` ou credenciais. Preserve o arquivo técnico de configuração da hospedagem para manter a associação com a versão existente.
 
 ## Editar conteúdo
 
