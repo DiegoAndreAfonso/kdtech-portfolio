@@ -15,6 +15,13 @@ O build de produção fica em `dist/`. O comando de preview permite conferir ess
 
 ## Trabalhar em equipe
 
+Repositório privado: [DiegoAndreAfonso/kdtech-portfolio](https://github.com/DiegoAndreAfonso/kdtech-portfolio). O acesso de colegas é concedido por convite nas configurações do repositório.
+
+```bash
+git clone git@github.com:DiegoAndreAfonso/kdtech-portfolio.git
+cd kdtech-portfolio
+```
+
 A branch principal é `main`. Depois de clonar o repositório, execute `npm ci` para instalar as versões registradas no lockfile.
 
 Crie uma branch com um nome relacionado ao trabalho, como `feat/conteudo-projetos` ou `fix/menu-mobile`. Antes de enviar alterações, execute `npm run build` e abra um pull request para `main`. O repositório verifica o build automaticamente em pushes e pull requests.
