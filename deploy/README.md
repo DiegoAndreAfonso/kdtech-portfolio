@@ -2,12 +2,16 @@
 
 Servidor: server@192.168.15.133, Ubuntu 24.04. O Nginx, PHP 8.4, MySQL e conector Cloudflare já existem. O Tunnel advogadosmca.com.br é administrado pelo painel; sua rota da raiz permanece em http://127.0.0.1:80.
 
+As quatro rotas abaixo foram publicadas em 10/10/2026. Foram conferidos o DNS público, os certificados HTTPS, as páginas e seus arquivos CSS/JavaScript. O login e logout do Atendimento também foram validados. A configuração e a versão da aplicação na raiz foram preservadas.
+
+Os scripts de hospedagem estão na branch `feat/hospedagem-servidor` deste repositório. As próximas releases reutilizam as rotas existentes no Tunnel.
+
 | Projeto | Endereço público | Serviço no servidor |
 | --- | --- | --- |
-| KDTech | kdtech.advogadosmca.com.br | http://127.0.0.1:8111 |
-| Lousa | lousa.advogadosmca.com.br | http://127.0.0.1:8112 |
-| Gestão Jurídica | gestao.advogadosmca.com.br | http://127.0.0.1:8080 |
-| Central de Atendimento Emergencial | atendimento.advogadosmca.com.br | http://127.0.0.1:8114 |
+| KDTech | [kdtech.advogadosmca.com.br](https://kdtech.advogadosmca.com.br/) | http://127.0.0.1:8111 |
+| Lousa | [lousa.advogadosmca.com.br](https://lousa.advogadosmca.com.br/) | http://127.0.0.1:8112 |
+| Gestão Jurídica | [gestao.advogadosmca.com.br](https://gestao.advogadosmca.com.br/login) | http://127.0.0.1:8080 |
+| Central de Atendimento Emergencial | [atendimento.advogadosmca.com.br](https://atendimento.advogadosmca.com.br/login.php) | http://127.0.0.1:8114 |
 
 Os listeners novos aceitam apenas conexões locais. O Tunnel fornece o acesso HTTPS público. As sessões e permissões próprias das aplicações continuam necessárias para acessar seus dados.
 
@@ -60,9 +64,11 @@ verify-server.py registra os hashes dos vhosts da raiz e a versão do sistema ju
 
 ## Rotas no Cloudflare Tunnel
 
-No painel da conta que administra o domínio, abrir **Networking → Tunnels → advogadosmca.com.br → Routes**. Adicionar quatro rotas do tipo **Published application**, usando a tabela acima. Preservar a rota existente da raiz e as configurações do Tunnel. Não é necessário rotacionar o token, reiniciar o conector ou alterar o arquivo local antigo de cloudflared.
+No painel da conta que administra o domínio, abrir **Networking → Tunnels → advogadosmca.com.br → Routes**. As quatro rotas do tipo **Published application** já estão cadastradas conforme a tabela acima. Em uma atualização dos projetos, manter essas rotas; somente uma mudança das portas locais exige alterar os destinos. Preservar a rota existente da raiz e as configurações do Tunnel. Não é necessário rotacionar o token, reiniciar o conector ou alterar o arquivo local antigo de cloudflared.
 
 O painel cria os registros DNS correspondentes. Conferir que não existe registro conflitante antes de salvar. Após ativar, verificar HTTPS, recursos CSS/JavaScript, rotas internas e login por cada endereço. Não usar o fragmento YAML neste servidor: cloudflare/ingress.fragment.yml é apenas um exemplo para conectores administrados por configuração local.
+
+Resolvedores e roteadores podem guardar respostas negativas feitas antes da criação dos registros. Se um endereço novo ainda não resolver em uma rede, conferir o DNS público e aguardar o vencimento desse cache. Isso não exige recriar a rota ou o registro DNS.
 
 ## Comportamento dos projetos
 
