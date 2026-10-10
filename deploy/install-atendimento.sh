@@ -232,11 +232,11 @@ try:
                 raise ValueError()
             if state["state"] == "ready" and str(target) != state.get("release"):
                 raise ValueError()
-        for path, key in [(pool,"pool_sha256"),(vhost,"vhost_sha256")]:
+        for path, key, header in [(pool,"pool_sha256",";"),(vhost,"vhost_sha256","#")]:
             if path.exists() or path.is_symlink():
                 if path.is_symlink() or not path.is_file() or path.stat().st_uid != 0:
                     raise ValueError()
-                if not path.read_text().startswith("# Gerenciado por install-atendimento.sh; instancia atendimento.\n"):
+                if not path.read_text().startswith(header + " Gerenciado por install-atendimento.sh; instancia atendimento.\n"):
                     raise ValueError()
                 if state.get(key) and hashlib.sha256(path.read_bytes()).hexdigest() != state[key]:
                     raise ValueError()
@@ -396,7 +396,7 @@ chown atendimento:atendimento /var/log/atendimento/php-error.log
 chmod 0600 /var/log/atendimento/php-error.log
 
 cat >"$work/new-pool" <<'POOL'
-# Gerenciado por install-atendimento.sh; instancia atendimento.
+; Gerenciado por install-atendimento.sh; instancia atendimento.
 [atendimento]
 user = atendimento
 group = atendimento
