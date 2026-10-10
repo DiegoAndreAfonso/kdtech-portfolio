@@ -1,0 +1,11 @@
+# Adicione estes itens à lista ingress existente, antes da regra final catch-all.
+# Preserve as rotas atuais. Este fragmento não é uma configuração completa.
+# Exemplo apenas para gerenciamento local; o servidor atual usa o painel.
+- hostname: kdtech.advogadosmca.com.br
+  service: http://127.0.0.1:8111
+- hostname: lousa.advogadosmca.com.br
+  service: http://127.0.0.1:8112
+- hostname: gestao.advogadosmca.com.br
+  service: http://127.0.0.1:8080
+- hostname: atendimento.advogadosmca.com.br
+  service: http://127.0.0.1:8114
