@@ -58,9 +58,9 @@ def verify(bundle):
     return manifest
 
 
-def check_http(port, path, expected=200):
+def check_http(port, path, expected=200, timeout=10):
     try:
-        with urllib.request.urlopen(f'http://127.0.0.1:{port}{path}', timeout=10) as response:
+        with urllib.request.urlopen(f'http://127.0.0.1:{port}{path}', timeout=timeout) as response:
             code = response.status
             content = response.read()
     except urllib.error.HTTPError as error:
@@ -69,6 +69,20 @@ def check_http(port, path, expected=200):
     if code != expected:
         raise RuntimeError(f'HTTP {code} na porta {port}{path}; esperado {expected}.')
     return content
+
+
+def wait_http(port, path, expected_content=None):
+    deadline = time.monotonic() + 20
+    while True:
+        try:
+            content = check_http(port, path, timeout=2)
+            if expected_content is not None and content != expected_content:
+                raise RuntimeError(f'A porta {port} ainda não serve o artefato desta release.')
+            return content
+        except (RuntimeError, OSError) as error:
+            if time.monotonic() >= deadline:
+                raise RuntimeError(f'A porta {port}{path} não ficou pronta em 20 segundos.') from error
+            time.sleep(0.5)
 
 
 def atomic_current(target):
@@ -152,17 +166,20 @@ def install(bundle, manifest):
         command('systemd-analyze', 'verify', str(files[1]))
         command('systemctl', 'daemon-reload')
         command('systemctl', 'restart', 'pela-ordem')
-        for attempt in range(20):
-            try:
-                check_http(3313, '/eproc/processos')
-                break
-            except (RuntimeError, OSError):
-                if attempt == 19:
-                    raise
-                time.sleep(1)
+        print('Aguardando a aplicação Node na porta 3313...', flush=True)
+        wait_http(3313, '/eproc/processos')
+        build_id = (release / '.next/BUILD_ID').read_text().strip()
+        if not re.fullmatch(r'[A-Za-z0-9_-]+', build_id):
+            raise RuntimeError('Identificador de build inválido.')
+        asset_path = f'/_next/static/{build_id}/_buildManifest.js'
+        asset_bytes = (release / '.next/static' / build_id / '_buildManifest.js').read_bytes()
+        wait_http(3313, asset_path, asset_bytes)
         command('systemctl', 'is-active', '--quiet', 'pela-ordem')
         command('systemctl', 'reload', 'nginx')
-        content = check_http(8113, '/eproc/processos')
+        print('Aguardando o Nginx na porta 8113...', flush=True)
+        content = wait_http(8113, '/eproc/processos')
+        wait_http(8113, asset_path, asset_bytes)
+        command('systemctl', 'is-active', '--quiet', 'pela-ordem')
         if b'Pela Ordem' not in content:
             raise RuntimeError('A página publicada não corresponde à release.')
         check_http(8113, '/api/state', 404)
@@ -183,6 +200,8 @@ def install(bundle, manifest):
             current.unlink(missing_ok=True)
         else:
             atomic_current(previous)
+        if not enabled_service_before and files[1].exists():
+            subprocess.run(['systemctl', 'disable', 'pela-ordem'], check=False)
         for path, content in originals.items():
             if content is None:
                 path.unlink(missing_ok=True)
@@ -196,8 +215,6 @@ def install(bundle, manifest):
             command('systemctl', 'restart', 'pela-ordem')
         else:
             subprocess.run(['systemctl', 'stop', 'pela-ordem'], check=False)
-        if not enabled_service_before:
-            subprocess.run(['systemctl', 'disable', 'pela-ordem'], check=False)
         command('nginx', '-t')
         command('systemctl', 'reload', 'nginx')
         raise
