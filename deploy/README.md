@@ -14,7 +14,7 @@ Os scripts de hospedagem estão na branch `feat/hospedagem-servidor` deste repos
 | Pela Ordem | [pelaordem.advogadosmca.com.br](https://pelaordem.advogadosmca.com.br/) | http://127.0.0.1:8113 |
 | Central de Atendimento Emergencial | [atendimento.advogadosmca.com.br](https://atendimento.advogadosmca.com.br/login.php) | http://127.0.0.1:8114 |
 
-Os listeners novos aceitam apenas conexões locais. O Tunnel fornece o acesso HTTPS público. As sessões e permissões próprias das aplicações continuam necessárias para acessar seus dados.
+Os listeners novos aceitam apenas conexões locais. O Tunnel fornece o acesso HTTPS público. Gestão Jurídica e Atendimento mantêm seus próprios logins e permissões para acesso aos dados.
 
 ## Preparar uma release
 
