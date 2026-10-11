@@ -1,0 +1,38 @@
+[Unit]
+Description=Pela Ordem - organizacao de audiencias
+After=network.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=pelaordem
+Group=pelaordem
+WorkingDirectory=/srv/pela-ordem/current
+Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
+Environment=TZ=America/Sao_Paulo
+Environment=HOSTNAME=127.0.0.1
+Environment=PORT=3313
+Environment=NODE_OPTIONS=--max-old-space-size=384
+ExecStart=/usr/bin/node /srv/pela-ordem/current/server.js
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+MemoryMax=512M
+CPUQuota=100%
+TasksMax=128
+
+[Install]
+WantedBy=multi-user.target

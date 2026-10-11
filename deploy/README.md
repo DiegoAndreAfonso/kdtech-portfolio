@@ -78,9 +78,13 @@ gestao.advogadosmca.com.br é outro endereço da aplicação já instalada em /v
 
 O Atendimento agora usa CSRF nos formulários, sessões com cookies seguros e autorização das solicitações pelo ID do usuário. Não divulga contas de teste ou erros internos. Uma nova instalação começa sem solicitações. A migração de uma base antiga é uma operação separada: os registros sem proprietário identificado ficam disponíveis apenas ao administrador; não há associação por nomes.
 
+## Pela Ordem
+
+O repositório correto é `gabrielportodev/hackthon`, distinto do Atendimento em PHP. A [hospedagem do Pela Ordem](pela-ordem/README.md) usa um serviço Node.js próprio, porta local 8113, com acesso público sem login e sem persistência de planilhas ou processos. O instalador e a publicação no Tunnel são independentes dos serviços atuais.
+
 ## Hub na raiz: prévia
 
-O diretório [hub](../hub/README.md) contém a prévia da central de projetos da KDTech para a página inicial de advogadosmca.com.br. Os quatro cards direcionam para os subdomínios atuais. O vhost proposto em nginx/projects-hub.conf atende somente a página inicial e seus recursos; os demais caminhos seguem para a aplicação jurídica existente na porta 8080.
+O diretório [hub](../hub/README.md) contém a prévia da central de projetos da KDTech para a página inicial de advogadosmca.com.br. Os quatro cards direcionam para Gestão Jurídica, Lousa, Pela Ordem e o portfólio. O Atendimento permanece instalado separadamente. O vhost proposto em nginx/projects-hub.conf atende somente a página inicial e seus recursos; os demais caminhos seguem para a aplicação jurídica existente na porta 8080.
 
 Essa proposta ainda não está instalada ou publicada. Sua revisão local é independente dos sites já publicados. A instalação e a alteração do destino da rota raiz no Tunnel serão etapas posteriores à definição da nova página inicial.
 

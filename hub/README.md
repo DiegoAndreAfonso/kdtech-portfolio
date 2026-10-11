@@ -1,6 +1,6 @@
 # Central de projetos da KDTech
 
-Prévia da página inicial proposta para https://advogadosmca.com.br/. Reúne acessos aos quatro endereços públicos já instalados. Gestão Jurídica e Atendimento continuam exigindo seus próprios logins; o Lousa está identificado como demonstração.
+Prévia da página inicial proposta para https://advogadosmca.com.br/. Reúne Gestão Jurídica, Lousa, Pela Ordem e o portfólio. Gestão Jurídica exige seu próprio login; o Lousa está identificado como demonstração. Pela Ordem é público, sem login e sem armazenamento de planilhas ou processos: os resultados ficam somente na aba aberta. A publicação do seu novo hostname é uma etapa independente da prévia do hub.
 
 A página é estática, sem dependências ou serviços externos. Seus arquivos usam exclusivamente o prefixo `/hub-static/`, evitando conflitos com os recursos do sistema jurídico.
 
@@ -22,4 +22,4 @@ Esse destino usa a configuração HTTPS existente e mantém uploads e encaminham
 
 Após instalar e validar o vhost, a publicação consiste em alterar apenas o destino da rota da raiz no Tunnel para `http://127.0.0.1:8110`. Os subdomínios continuam com os serviços atuais. A reversão consiste em retornar a rota da raiz ao destino anterior `http://127.0.0.1:80`.
 
-O vhost é uma proposta, ainda sem instalação. Antes de publicar, conferir sintaxe Nginx, página e arquivos do hub, login, API, recursos da aplicação jurídica e preservação dos quatro subdomínios. A prévia não substitui a página pública atual.
+O vhost é uma proposta, ainda sem instalação. Antes de publicar, conferir sintaxe Nginx, página e arquivos do hub, login, API, recursos da aplicação jurídica e preservação dos subdomínios atuais. O serviço Atendimento permanece independente e não aparece no hub proposto. A prévia não substitui a página pública atual.
