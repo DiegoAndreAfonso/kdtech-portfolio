@@ -1,6 +1,6 @@
 # Central de projetos da KDTech
 
-Prévia da página inicial proposta para https://advogadosmca.com.br/. Reúne Gestão Jurídica, Lousa, Pela Ordem e o portfólio. Gestão Jurídica exige seu próprio login; o Lousa está identificado como demonstração. Pela Ordem é público, sem login e sem armazenamento de planilhas ou processos: os resultados ficam somente na aba aberta. A publicação do seu novo hostname é uma etapa independente da prévia do hub.
+Prévia da página inicial proposta para https://advogadosmca.com.br/. Reúne Gestão Jurídica, Lousa, Pela Ordem e o portfólio. Gestão Jurídica exige seu próprio login; o Lousa está identificado como demonstração. Pela Ordem já está publicado em https://pelaordem.advogadosmca.com.br/, sem login e sem armazenamento de planilhas ou processos: os resultados ficam somente na aba aberta. O hub da raiz continua em prévia.
 
 A página é estática, sem dependências ou serviços externos. Seus arquivos usam exclusivamente o prefixo `/hub-static/`, evitando conflitos com os recursos do sistema jurídico.
 

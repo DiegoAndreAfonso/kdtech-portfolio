@@ -44,9 +44,11 @@ As configurações e releases anteriores são preservadas. O instalador valida c
 
 ## Publicação
 
-Após validar a instalação local, cadastrar no Tunnel existente somente a rota pública:
+A aplicação foi instalada e publicada em 10/10/2026, com o commit `e0866e8a253906c0cfdd726cca01a41081f47d9d`. A unidade `pela-ordem.service` está ativa e habilitada para iniciar com o servidor. A rota pública está cadastrada no Tunnel existente:
 
 - Hostname: `pelaordem.advogadosmca.com.br`
 - Serviço: `http://127.0.0.1:8113`
 
-Conferir DNS, HTTPS, importação e exportação usando dados fictícios. A publicação do Pela Ordem é independente da proposta de hub na raiz. O Atendimento continua instalado separadamente, sem aparecer no hub proposto.
+DNS público, HTTPS, importação e exportação XLSX foram conferidos usando dados fictícios. As respostas de importação/exportação usam `Cache-Control: no-store`, não criam cookies de sessão e o endpoint antigo de estado compartilhado está ausente. Os testes na versão instalada também conferiram isolamento entre clientes e ausência de arquivo de estado.
+
+Nas próximas releases, reutilizar a rota existente e repetir a validação antes de confirmar a instalação. A publicação do Pela Ordem é independente da proposta de hub na raiz, que permanece em prévia. O Atendimento continua instalado separadamente, sem aparecer no hub proposto.

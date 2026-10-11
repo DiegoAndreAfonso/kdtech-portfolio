@@ -2,7 +2,7 @@
 
 Servidor: server@192.168.15.133, Ubuntu 24.04. O Nginx, PHP 8.4, MySQL e conector Cloudflare já existem. O Tunnel advogadosmca.com.br é administrado pelo painel; sua rota da raiz permanece em http://127.0.0.1:80.
 
-As quatro rotas abaixo foram publicadas em 10/10/2026. Foram conferidos o DNS público, os certificados HTTPS, as páginas e seus arquivos CSS/JavaScript. O login e logout do Atendimento também foram validados. A configuração e a versão da aplicação na raiz foram preservadas.
+As cinco rotas abaixo foram publicadas em 10/10/2026. Foram conferidos o DNS público, os certificados HTTPS e as páginas. Os recursos CSS/JavaScript dos quatro serviços iniciais, o login e logout do Atendimento e a importação e exportação XLSX do Pela Ordem com dados fictícios também foram validados. A configuração e a versão da aplicação na raiz foram preservadas.
 
 Os scripts de hospedagem estão na branch `feat/hospedagem-servidor` deste repositório. As próximas releases reutilizam as rotas existentes no Tunnel.
 
@@ -11,6 +11,7 @@ Os scripts de hospedagem estão na branch `feat/hospedagem-servidor` deste repos
 | KDTech | [kdtech.advogadosmca.com.br](https://kdtech.advogadosmca.com.br/) | http://127.0.0.1:8111 |
 | Lousa | [lousa.advogadosmca.com.br](https://lousa.advogadosmca.com.br/) | http://127.0.0.1:8112 |
 | Gestão Jurídica | [gestao.advogadosmca.com.br](https://gestao.advogadosmca.com.br/login) | http://127.0.0.1:8080 |
+| Pela Ordem | [pelaordem.advogadosmca.com.br](https://pelaordem.advogadosmca.com.br/) | http://127.0.0.1:8113 |
 | Central de Atendimento Emergencial | [atendimento.advogadosmca.com.br](https://atendimento.advogadosmca.com.br/login.php) | http://127.0.0.1:8114 |
 
 Os listeners novos aceitam apenas conexões locais. O Tunnel fornece o acesso HTTPS público. As sessões e permissões próprias das aplicações continuam necessárias para acessar seus dados.
@@ -64,7 +65,7 @@ verify-server.py registra os hashes dos vhosts da raiz e a versão do sistema ju
 
 ## Rotas no Cloudflare Tunnel
 
-No painel da conta que administra o domínio, abrir **Networking → Tunnels → advogadosmca.com.br → Routes**. As quatro rotas do tipo **Published application** já estão cadastradas conforme a tabela acima. Em uma atualização dos projetos, manter essas rotas; somente uma mudança das portas locais exige alterar os destinos. Preservar a rota existente da raiz e as configurações do Tunnel. Não é necessário rotacionar o token, reiniciar o conector ou alterar o arquivo local antigo de cloudflared.
+No painel da conta que administra o domínio, abrir **Networking → Tunnels → advogadosmca.com.br → Routes**. As cinco rotas dos projetos do tipo **Published application** já estão cadastradas conforme a tabela acima, além da rota existente da raiz. Em uma atualização dos projetos, manter essas rotas; somente uma mudança das portas locais exige alterar os destinos. Preservar a rota existente da raiz e as configurações do Tunnel. Não é necessário rotacionar o token, reiniciar o conector ou alterar o arquivo local antigo de cloudflared.
 
 O painel cria os registros DNS correspondentes. Conferir que não existe registro conflitante antes de salvar. Após ativar, verificar HTTPS, recursos CSS/JavaScript, rotas internas e login por cada endereço. Não usar o fragmento YAML neste servidor: cloudflare/ingress.fragment.yml é apenas um exemplo para conectores administrados por configuração local.
 
@@ -80,7 +81,7 @@ O Atendimento agora usa CSRF nos formulários, sessões com cookies seguros e au
 
 ## Pela Ordem
 
-O repositório correto é `gabrielportodev/hackthon`, distinto do Atendimento em PHP. A [hospedagem do Pela Ordem](pela-ordem/README.md) usa um serviço Node.js próprio, porta local 8113, com acesso público sem login e sem persistência de planilhas ou processos. O instalador e a publicação no Tunnel são independentes dos serviços atuais.
+O repositório correto é `gabrielportodev/hackthon`, distinto do Atendimento em PHP. A [hospedagem do Pela Ordem](pela-ordem/README.md) está instalada com o commit `e0866e8a253906c0cfdd726cca01a41081f47d9d` da branch `feat/hospedagem-sem-persistencia`, sincronizada com o repositório privado. Usa um serviço Node.js próprio e a porta local 8113, com acesso público sem login e sem persistência de planilhas ou processos. Os resultados ficam na aba aberta e são descartados ao recarregar ou fechar; devem ser exportados antes disso. Sua instalação e publicação no Tunnel preservaram os serviços atuais.
 
 ## Hub na raiz: prévia
 
