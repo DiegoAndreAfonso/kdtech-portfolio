@@ -39,7 +39,7 @@ A KDTech ainda não dispõe de canais públicos de contato. Não há serviço de
 
 ## Publicação
 
-As páginas individuais são `/projetos/gestao-juridica`, `/projetos/pela-ordem`, `/projetos/lousa` e `/projetos/jusexplica`. O build gera entradas estáticas por rota para suportar o acesso direto e a atualização das páginas. Em hospedagens que exigem fallback para aplicações de página única, configure o redirecionamento das rotas para `index.html`.
+As páginas individuais são `/projetos/gestao-juridica`, `/projetos/pela-ordem`, `/projetos/lousa`, `/projetos/gestorize-mobile` e `/projetos/jusexplica`. O build gera entradas estáticas por rota para suportar o acesso direto e a atualização das páginas. Em hospedagens que exigem fallback para aplicações de página única, configure o redirecionamento das rotas para `index.html`.
 
 ## Informações pendentes
 
@@ -50,3 +50,7 @@ As páginas individuais são `/projetos/gestao-juridica`, `/projetos/pela-ordem`
 - Biografias curtas, fotos e links profissionais opcionais de Diego e Kennedy.
 
 Os créditos seguem as informações fornecidas. O Lousa é apresentado como protótipo de frontend em React, TypeScript e Vite com persistência local: autenticação, e-mail, assinatura e aplicativo são simulados; backend e compartilhamento de dados entre dispositivos são etapas futuras. O controle nativo do computador durante avaliações não está implementado.
+
+## GestorizeMobile
+
+Projeto em coautoria de Diego André Afonso e Kennedy Pinheiro, com aplicativo React Native/Expo e API Laravel. A página `/projetos/gestorize-mobile` destaca clientes, produtos, consulta de CEP, acesso e preferências de interface presentes no código. Fornecedores, funcionários, orçamentos e relatórios são apresentados como fluxos mobile em desenvolvimento. O link direciona ao repositório público original; a prévia é ilustrativa, sem demonstração hospedada do aplicativo.

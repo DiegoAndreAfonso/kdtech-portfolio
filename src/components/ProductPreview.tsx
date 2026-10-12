@@ -17,6 +17,7 @@ import {
   Wallet,
 } from "lucide-react";
 import type { Project } from "../data";
+import GestorizePreview from "./GestorizePreview";
 
 type PreviewProps = {
   variant: NonNullable<Project["visual"]>;
@@ -29,6 +30,7 @@ export default function ProductPreview({
   compact = false,
   className = "",
 }: PreviewProps) {
+  if (variant === "mobile") return <GestorizePreview compact={compact} className={className} />;
   return (
     <div
       className={`product-preview ${variant} ${compact ? "compact" : ""} ${className}`}

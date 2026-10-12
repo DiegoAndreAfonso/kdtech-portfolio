@@ -1,5 +1,5 @@
 export interface Project {
-  id: "gestao-juridica" | "pela-ordem" | "lousa" | "jusexplica";
+  id: "gestao-juridica" | "pela-ordem" | "lousa" | "jusexplica" | "gestorize-mobile";
   name: string;
   number: string;
   category?: string;
@@ -23,7 +23,7 @@ export interface Project {
   images?: { src: string; alt: string; caption?: string }[];
   links?: { label: string; url: string }[];
   accent: string;
-  visual?: "legal" | "schedule" | "education";
+  visual?: "legal" | "schedule" | "education" | "mobile";
 }
 
 export interface Person {
@@ -234,9 +234,89 @@ export const projects: Project[] = [
     visual: "education",
   },
   {
+    id: "gestorize-mobile",
+    name: "GestorizeMobile",
+    number: "04",
+    category: "Gestão empresarial no celular",
+    shortProblem: "Organizar clientes e produtos na rotina de pequenas empresas.",
+    summary:
+      "Um aplicativo de gestão para pequenas e médias empresas, com cadastros de clientes e produtos em uma interface mobile integrada a uma API Laravel.",
+    problem:
+      "Pequenas e médias empresas precisam manter informações de clientes, produtos e endereços organizadas, inclusive durante o trabalho fora do escritório. Consultar e atualizar esses registros pelo celular ajuda a reunir as informações da rotina.",
+    solution:
+      "O GestorizeMobile reúne cadastros de clientes e produtos em um aplicativo desenvolvido com React Native e Expo, conectado a uma API Laravel. A proposta também contempla fornecedores, funcionários, orçamentos e relatórios, cujos fluxos mobile ainda estão em desenvolvimento.",
+    benefits: [
+      "Consultar e atualizar cadastros durante o trabalho pelo celular.",
+      "Organizar produtos por categoria e unidade de medida.",
+      "Facilitar o preenchimento de endereços com consulta de CEP.",
+    ],
+    features: [
+      {
+        title: "Clientes PF e PJ",
+        description:
+          "Cadastro, consulta, edição e exclusão de clientes, com avatar e informações de endereço.",
+        status: "demonstrated",
+      },
+      {
+        title: "Catálogo de produtos",
+        description:
+          "Cadastro, consulta, edição e exclusão de produtos, com categoria, unidade de medida e imagem.",
+        status: "demonstrated",
+      },
+      {
+        title: "Endereços por CEP",
+        description:
+          "Consulta ao ViaCEP para apoiar o preenchimento dos dados de endereço.",
+        status: "demonstrated",
+      },
+      {
+        title: "Acesso e permissões",
+        description:
+          "Autenticação por token com Laravel Sanctum, encerramento e renovação de sessão, papéis e permissões de acesso.",
+        status: "demonstrated",
+      },
+      {
+        title: "Preferências de interface",
+        description:
+          "Tema claro ou escuro e opção de listas compactas para organizar a visualização no celular.",
+        status: "demonstrated",
+      },
+      {
+        title: "Expansão da gestão",
+        description:
+          "Os fluxos mobile de fornecedores, funcionários, orçamentos e relatórios ainda incluem telas ou dados demonstrativos e seguem em desenvolvimento.",
+        status: "planned",
+      },
+    ],
+    flow: [
+      "Entrar no aplicativo",
+      "Organizar o cadastro de clientes",
+      "Cadastrar produtos e suas categorias",
+      "Consultar e atualizar os registros pelo celular",
+    ],
+    authors: ["Diego André Afonso", "Kennedy Pinheiro"],
+    credit:
+      "Desenvolvido em coautoria por Diego André Afonso e Kennedy Pinheiro.",
+    stage: "Aplicativo e API em desenvolvimento.",
+    technologies: [
+      "React Native", "Expo", "TypeScript", "React Native Paper",
+      "Laravel", "PHP", "Laravel Sanctum", "Spatie Permission",
+    ],
+    limitations: [
+      "Fornecedores, funcionários, orçamentos e relatórios ainda usam listagens demonstrativas no aplicativo.",
+      "Os formulários de novo fornecedor, funcionário e orçamento e a exportação de relatórios ainda não estão implementados no mobile.",
+      "O repositório não apresenta uma demonstração pública do aplicativo; a prévia neste portfólio é uma ilustração de interface.",
+    ],
+    links: [
+      { label: "Ver repositório", url: "https://github.com/KennedyPinheiro/GestorizeMobile" },
+    ],
+    accent: "#fbbf24",
+    visual: "mobile",
+  },
+  {
     id: "jusexplica",
     name: "JusExplica",
-    number: "04",
+    number: "05",
     authors: ["Kennedy Pinheiro"],
     credit: "Desenvolvido por Kennedy Pinheiro.",
     origin: "Desenvolvido no mesmo contexto de hackathon do Pela Ordem.",
@@ -250,14 +330,14 @@ export const people: Person[] = [
     name: "Diego André Afonso",
     initials: "DA",
     role: "Desenvolvimento de software",
-    projectIds: ["gestao-juridica", "pela-ordem", "lousa"],
+    projectIds: ["gestao-juridica", "pela-ordem", "lousa", "gestorize-mobile"],
   },
   {
     id: "kennedy",
     name: "Kennedy Pinheiro",
     initials: "KP",
     role: "Desenvolvimento de software",
-    projectIds: ["gestao-juridica", "jusexplica", "lousa"],
+    projectIds: ["gestao-juridica", "jusexplica", "lousa", "gestorize-mobile"],
   },
   {
     id: "alice",

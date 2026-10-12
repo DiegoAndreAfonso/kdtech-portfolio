@@ -264,7 +264,7 @@ function Hero() {
           <div className="visual-caption">
             <span className="caption-line" />
             Prévias ilustrativas dos projetos
-            <span className="visual-count">01 — 03</span>
+            <span className="visual-count">01 — {String(projects.length).padStart(2, "0")}</span>
           </div>
         </div>
       </div>
@@ -369,7 +369,7 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 function Projects() {
-  const jus = projects[3];
+  const jus = projects.find((project) => project.id === "jusexplica")!;
   return (
     <section className="projects-section section" id="projetos">
       <div className="container">
@@ -386,8 +386,8 @@ function Projects() {
             Conheça o problema, a proposta e quem fez.
           </p>
         </div>
-        <div className="projects-grid">
-          {projects.slice(0, 3).map((project) => (
+        <div className="projects-grid projects-grid-expanded">
+          {projects.filter((project) => project.id !== "jusexplica").map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>
@@ -397,7 +397,7 @@ function Projects() {
           </div>
         )}
         <article className="jus-row">
-          <span className="jus-number">04 /</span>
+          <span className="jus-number">{jus.number} /</span>
           <div className="jus-title">
             <span>DO HACKATHON</span>
             <h3>{jus.name}</h3>
@@ -719,7 +719,7 @@ function Detail({ project }: { project: Project }) {
                 {project.category || "PROJETO DO HACKATHON"}
               </div>
               <h1>
-                {project.name}
+                {project.id === "gestorize-mobile" ? <>Gestorize<wbr />Mobile</> : project.name}
                 <span>.</span>
               </h1>
               {project.summary && <p>{project.summary}</p>}

@@ -1,0 +1,196 @@
+.gm-preview {
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  width: 100%;
+  min-width: 0;
+  height: 300px;
+  padding: 17px;
+  overflow: hidden;
+  border: 1px solid #315078;
+  border-radius: 10px;
+  background: radial-gradient(ellipse at 75% 15%, #16467d 0, #062046 64%);
+  color: #0f172a;
+  font-family: var(--font-sans, sans-serif);
+  box-sizing: border-box;
+}
+
+.gm-preview::before {
+  position: absolute;
+  z-index: -1;
+  width: 330px;
+  height: 330px;
+  border: 1px solid #609aeb30;
+  border-radius: 50%;
+  content: "";
+}
+
+.gm-phone {
+  display: flex;
+  flex-direction: column;
+  width: min(244px, 100%);
+  height: 100%;
+  min-width: 0;
+  padding: 12px;
+  gap: 10px;
+  border: 5px solid #193a69;
+  border-radius: 26px;
+  background: #f8fafc;
+  box-shadow: 0 10px 25px #0004;
+  box-sizing: border-box;
+}
+
+.gm-phone-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 27px;
+  color: #062046;
+}
+
+.gm-phone-header > span {
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -0.7px;
+}
+
+.gm-wordmark-dot {
+  color: #005ce4;
+}
+
+.gm-section-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #193a69;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.gm-record {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-height: 46px;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #dbe5f2;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 2px 4px #06204608;
+  box-sizing: border-box;
+}
+
+.gm-record-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: #005ce414;
+  color: #005ce4;
+}
+
+.gm-record-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+}
+
+.gm-record-text b {
+  font-size: 11px;
+  line-height: 1.25;
+  font-weight: 750;
+}
+
+.gm-record-text small {
+  color: #475569;
+  font-size: 9px;
+  line-height: 1.25;
+}
+
+.gm-record-arrow {
+  flex-shrink: 0;
+  color: #193a69;
+}
+
+.gm-example-label {
+  color: #475569;
+  font-size: 9px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.gm-home-indicator {
+  flex: 0 0 3px;
+  width: 52px;
+  margin: -4px auto -5px;
+  border-radius: 5px;
+  background: #193a6940;
+}
+
+.gm-compact {
+  height: 230px;
+  padding: 10px;
+}
+
+.gm-compact .gm-phone {
+  width: min(225px, 100%);
+  gap: 6px;
+  padding: 8px 10px;
+  border-width: 4px;
+  border-radius: 23px;
+}
+
+.gm-compact .gm-phone-header {
+  min-height: 22px;
+}
+
+.gm-compact .gm-phone-header > span {
+  font-size: 16px;
+}
+
+.gm-compact .gm-record {
+  min-height: 42px;
+  padding: 6px;
+  gap: 6px;
+}
+
+.gm-compact .gm-record-icon {
+  flex-basis: 27px;
+  height: 27px;
+}
+
+.gm-compact .gm-record-text b {
+  font-size: 10px;
+}
+
+.gm-compact .gm-record-text small,
+.gm-compact .gm-example-label {
+  font-size: 8px;
+}
+
+.gm-compact .gm-home-indicator {
+  margin-top: -2px;
+  margin-bottom: -3px;
+}
+
+@media (max-width: 360px) {
+  .gm-preview {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+
+  .gm-phone {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+
+  .gm-record-arrow {
+    display: none;
+  }
+}
