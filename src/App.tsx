@@ -264,7 +264,7 @@ function Hero() {
           <div className="visual-caption">
             <span className="caption-line" />
             Prévias ilustrativas dos projetos
-            <span className="visual-count">01 — 03</span>
+            <span className="visual-count">01 — {String(projects.length).padStart(2, "0")}</span>
           </div>
         </div>
       </div>
@@ -369,7 +369,7 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 function Projects() {
-  const jus = projects[3];
+  const jus = projects.find((project) => project.id === "jusexplica")!;
   return (
     <section className="projects-section section" id="projetos">
       <div className="container">
@@ -386,20 +386,20 @@ function Projects() {
             Conheça o problema, a proposta e quem fez.
           </p>
         </div>
-        <div className="projects-grid">
-          {projects.slice(0, 3).map((project) => (
+        <div className="projects-grid projects-grid-expanded">
+          {projects.filter((project) => project.id !== "jusexplica").map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>
-        {(jus.images?.length || jus.visual) && (
+        {Boolean(jus.images?.length) && (
           <div className="jus-additional-preview">
             <ProjectImage project={jus} />
           </div>
         )}
         <article className="jus-row">
-          <span className="jus-number">04 /</span>
+          <span className="jus-number">{jus.number} /</span>
           <div className="jus-title">
-            <span>DO HACKATHON</span>
+            <span>{jus.category || "DO HACKATHON"}</span>
             <h3>{jus.name}</h3>
           </div>
           <div className="jus-description">
@@ -500,7 +500,8 @@ function About() {
               <Link to="/projetos/pela-ordem">Pela Ordem</Link>, desenvolvido
               por Diego com outros integrantes da equipe, e{" "}
               <Link to="/projetos/jusexplica">JusExplica</Link>, desenvolvido
-              por Kennedy. Cada projeto tem sua própria proposta e autoria.
+              pela equipe do projeto, com Kennedy na tecnologia. Cada projeto
+              tem sua própria proposta e autoria.
             </p>
           </div>
           <ArrowUpRight className="hackathon-arrow" size={28} />
@@ -700,6 +701,9 @@ function Detail({ project }: { project: Project }) {
     project.images?.[0]?.src,
   );
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const hasAudience = Boolean(project.audience || project.businessModel);
+  const participants: { name: string; role?: string }[] =
+    project.participants || project.authors.map((name) => ({ name }));
   useEffect(() => setGalleryIndex(0), [project.id]);
   return (
     <>
@@ -719,14 +723,16 @@ function Detail({ project }: { project: Project }) {
                 {project.category || "PROJETO DO HACKATHON"}
               </div>
               <h1>
-                {project.name}
+                {project.id === "gestorize-mobile" ? <>Gestorize<wbr />Mobile</> : project.name}
                 <span>.</span>
               </h1>
               {project.summary && <p>{project.summary}</p>}
               {!project.summary && project.origin && <p>{project.origin}</p>}
             </div>
             <div className="detail-intro-credit">
-              <span>QUEM DESENVOLVEU</span>
+              <span>
+                {project.participants ? "EQUIPE DO PROJETO" : "QUEM DESENVOLVEU"}
+              </span>
               <p>{project.credit}</p>
               {project.stage && (
                 <span className="detail-stage">
@@ -763,6 +769,11 @@ function Detail({ project }: { project: Project }) {
                   Recursos <ChevronRight size={14} />
                 </a>
               ) : null}
+              {hasAudience && (
+                <a href="#publico">
+                  Público e modelo <ChevronRight size={14} />
+                </a>
+              )}
               {project.stage && (
                 <a href="#estagio">
                   Estágio atual <ChevronRight size={14} />
@@ -788,7 +799,7 @@ function Detail({ project }: { project: Project }) {
             {project.problem && (
               <section className="detail-block" id="contexto">
                 <SectionLabel number="01">CONTEXTO E PROBLEMA</SectionLabel>
-                <h2>Um desafio da rotina.</h2>
+                <h2>{project.headings?.context || "Um desafio da rotina."}</h2>
                 <p>{project.problem}</p>
                 {project.origin && (
                   <p className="origin-note">
@@ -801,7 +812,9 @@ function Detail({ project }: { project: Project }) {
             {project.solution && (
               <section className="detail-block" id="solucao">
                 <SectionLabel number="02">A SOLUÇÃO PROPOSTA</SectionLabel>
-                <h2>Organização que faz sentido.</h2>
+                <h2>
+                  {project.headings?.solution || "Organização que faz sentido."}
+                </h2>
                 <p>{project.solution}</p>
                 {project.flow?.length ? (
                   <>
@@ -849,9 +862,10 @@ function Detail({ project }: { project: Project }) {
               <section className="detail-block" id="recursos">
                 <SectionLabel number="03">PRINCIPAIS RECURSOS</SectionLabel>
                 <h2>
-                  {project.id === "lousa"
-                    ? "O protótipo e os próximos passos."
-                    : "O trabalho em uma visão mais clara."}
+                  {project.headings?.features ||
+                    (project.id === "lousa"
+                      ? "O protótipo e os próximos passos."
+                      : "O trabalho em uma visão mais clara.")}
                 </h2>
                 <div className="features-list">
                   {project.features.map((feature, index) => (
@@ -875,6 +889,23 @@ function Detail({ project }: { project: Project }) {
                 </div>
               </section>
             ) : null}
+            {hasAudience && (
+              <section className="detail-block" id="publico">
+                <SectionLabel number="04">
+                  PÚBLICO E MODELO DE NEGÓCIO
+                </SectionLabel>
+                <h2>Para quem a proposta foi pensada.</h2>
+                {project.audience && <p>{project.audience}</p>}
+                {project.businessModel && (
+                  <>
+                    <h3 className="detail-subtitle">
+                      Como o projeto pretende crescer
+                    </h3>
+                    <p>{project.businessModel}</p>
+                  </>
+                )}
+              </section>
+            )}
             {project.images && project.images.length > 1 && (
               <section className="detail-block" id="galeria">
                 <SectionLabel number="04">GALERIA DE TELAS</SectionLabel>
@@ -910,7 +941,7 @@ function Detail({ project }: { project: Project }) {
               project.limitations?.length ||
               project.technologies?.length) && (
               <section className="detail-block stage-block" id="estagio">
-                <SectionLabel number="04">
+                <SectionLabel number={hasAudience ? "05" : "04"}>
                   {project.stage ? "ESTÁGIO DO PROJETO" : "SOBRE A PROPOSTA"}
                 </SectionLabel>
                 {project.stage && (
@@ -931,7 +962,10 @@ function Detail({ project }: { project: Project }) {
                 ) : null}
                 {project.technologies?.length ? (
                   <div className="technologies">
-                    <span>TECNOLOGIAS CONFIRMADAS</span>
+                    <span>
+                      {project.technologiesLabel || "TECNOLOGIAS CONFIRMADAS"}
+                    </span>
+                    {project.architecture && <p>{project.architecture}</p>}
                     <div>
                       {project.technologies.map((technology) => (
                         <span key={technology}>{technology}</span>
@@ -942,13 +976,15 @@ function Detail({ project }: { project: Project }) {
               </section>
             )}
             <section className="detail-block" id="participantes">
-              <SectionLabel number={project.problem ? "05" : "01"}>
+              <SectionLabel
+                number={hasAudience ? "06" : project.problem ? "05" : "01"}
+              >
                 PARTICIPANTES
               </SectionLabel>
               <h2>As pessoas deste projeto.</h2>
               <p>{project.credit}</p>
               <div className="detail-authors">
-                {project.authors.map((name) => {
+                {participants.map(({ name, role }) => {
                   const person = people.find((p) => p.name === name);
                   return (
                     <div key={name}>
@@ -960,7 +996,10 @@ function Detail({ project }: { project: Project }) {
                             .map((part) => part[0])
                             .join("")}
                       </span>
-                      <b>{name}</b>
+                      <div className="author-info">
+                        <b>{name}</b>
+                        {role && <span>{role}</span>}
+                      </div>
                     </div>
                   );
                 })}

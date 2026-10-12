@@ -11,7 +11,11 @@ import subprocess
 import tarfile
 
 
-def commit(root: Path) -> str:
+def commit(root: Path, require_clean: bool = False) -> str:
+    if require_clean and subprocess.check_output(
+        ["git", "-C", str(root), "status", "--porcelain"], text=True
+    ).strip():
+        raise ValueError("Registre e revise as alterações da fonte antes de empacotar")
     value = subprocess.check_output(
         ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
     ).strip()
@@ -52,18 +56,27 @@ def archive(output: Path, root: Path, paths: list[Path]) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--lousa", type=Path, required=True)
-    parser.add_argument("--atendimento", type=Path, required=True)
+    parser.add_argument("--only", choices=["kdtech"], help="Atualizar somente o portfólio já instalado")
+    parser.add_argument("--lousa", type=Path)
+    parser.add_argument("--atendimento", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if args.only is None and (args.lousa is None or args.atendimento is None):
+        parser.error("O pacote completo exige --lousa e --atendimento; use --only kdtech para atualizar só o portfólio")
     portfolio = Path(__file__).resolve().parent.parent
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     allowed_output = {"kdtech.tar.gz", "lousa.tar.gz", "atendimento.tar.gz", "manifest.json", "SHA256SUMS", "install.sh", "install-static.sh", "install-atendimento.sh", "verify-server.py", "README.md"}
+    if args.only:
+        allowed_output = {"kdtech.tar.gz", "manifest.json", "SHA256SUMS", "install-static.sh", "verify-server.py", "README.md"}
     if any(path.is_symlink() or not path.is_file() or path.name not in allowed_output for path in output.iterdir()):
         raise ValueError("Use uma pasta de saída nova ou contendo somente o pacote anterior")
     projects = []
-    for name, root in [("kdtech", portfolio), ("lousa", args.lousa.resolve())]:
+    static_projects = [("kdtech", portfolio)]
+    if args.only is None:
+        static_projects.append(("lousa", args.lousa.resolve()))
+    for name, root in static_projects:
+        source_commit = commit(root, require_clean=True)
         dist = root / "dist"
         if not (dist / "index.html").is_file():
             raise ValueError(f"Build ausente: {dist}")
@@ -72,28 +85,30 @@ def main():
         paths = [path for path in files_under(dist, dist) if path.name != "_redirects"]
         filename = f"{name}.tar.gz"
         checksum = archive(output / filename, dist, paths)
-        projects.append(dict(project=name, hostname=f"{name}.advogadosmca.com.br", commit=commit(root), archive=filename, sha256=checksum))
+        projects.append(dict(project=name, hostname=f"{name}.advogadosmca.com.br", commit=source_commit, archive=filename, sha256=checksum))
 
-    root = args.atendimento.resolve()
-    paths = list(files_under(root, root / "site1.com/public_html"))
-    allowed_public = {"site1.com/public_html/" + name for name in ["index.php", "login.php", "logout.php", "auth.php", "create.php", "edit.php", "resolve.php", "assets/app.css"]}
-    if {str(path.relative_to(root)) for path in paths} != allowed_public:
-        raise ValueError("O diretório público do Atendimento contém arquivos inesperados ou está incompleto")
-    required = [
-        "site1.com/config/runtime.php", "site1.com/config/connection.php",
-        "site1.com/database/schema.sql",
-        "site1.com/database/migrations/001_usuario_solicitacao.sql",
-        "scripts/provision-admin.php",
-    ]
-    paths.extend(root / name for name in required)
-    relative_paths = [str(path.relative_to(root)) for path in paths]
-    subprocess.run(["git", "-C", str(root), "ls-files", "--error-unmatch", "--", *relative_paths], check=True, stdout=subprocess.DEVNULL)
-    if subprocess.run(["git", "-C", str(root), "diff", "--quiet", "HEAD", "--", *relative_paths]).returncode != 0:
-        raise ValueError("Registre as alterações dos arquivos empacotados do Atendimento antes de gerar a release")
-    checksum = archive(output / "atendimento.tar.gz", root, sorted(paths))
-    projects.append(dict(project="atendimento", hostname="atendimento.advogadosmca.com.br", commit=commit(root), archive="atendimento.tar.gz", sha256=checksum))
+    if args.only is None:
+        root = args.atendimento.resolve()
+        paths = list(files_under(root, root / "site1.com/public_html"))
+        allowed_public = {"site1.com/public_html/" + name for name in ["index.php", "login.php", "logout.php", "auth.php", "create.php", "edit.php", "resolve.php", "assets/app.css"]}
+        if {str(path.relative_to(root)) for path in paths} != allowed_public:
+            raise ValueError("O diretório público do Atendimento contém arquivos inesperados ou está incompleto")
+        required = [
+            "site1.com/config/runtime.php", "site1.com/config/connection.php",
+            "site1.com/database/schema.sql",
+            "site1.com/database/migrations/001_usuario_solicitacao.sql",
+            "scripts/provision-admin.php",
+        ]
+        paths.extend(root / name for name in required)
+        relative_paths = [str(path.relative_to(root)) for path in paths]
+        subprocess.run(["git", "-C", str(root), "ls-files", "--error-unmatch", "--", *relative_paths], check=True, stdout=subprocess.DEVNULL)
+        if subprocess.run(["git", "-C", str(root), "diff", "--quiet", "HEAD", "--", *relative_paths]).returncode != 0:
+            raise ValueError("Registre as alterações dos arquivos empacotados do Atendimento antes de gerar a release")
+        checksum = archive(output / "atendimento.tar.gz", root, sorted(paths))
+        projects.append(dict(project="atendimento", hostname="atendimento.advogadosmca.com.br", commit=commit(root), archive="atendimento.tar.gz", sha256=checksum))
     (output / "manifest.json").write_text(json.dumps(projects, ensure_ascii=False, indent=2) + "\n")
-    for name in ["install.sh", "install-static.sh", "install-atendimento.sh", "verify-server.py", "README.md"]:
+    scripts = ["install-static.sh", "verify-server.py", "README.md"] if args.only else ["install.sh", "install-static.sh", "install-atendimento.sh", "verify-server.py", "README.md"]
+    for name in scripts:
         shutil.copyfile(portfolio / "deploy" / name, output / name)
     files = sorted(path for path in output.iterdir() if path.is_file() and path.name != "SHA256SUMS")
     (output / "SHA256SUMS").write_text("".join(f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n" for path in files))

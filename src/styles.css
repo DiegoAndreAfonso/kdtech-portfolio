@@ -1800,6 +1800,12 @@ h2 > span {
   color: #7e96a6;
   letter-spacing: 1.2px;
 }
+.technologies > p {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.9;
+  color: #acb9c6;
+}
 .technologies > div {
   display: flex;
   flex-wrap: wrap;
@@ -1829,6 +1835,7 @@ h2 > span {
   padding: 15px;
 }
 .author-avatar {
+  flex-shrink: 0;
   height: 38px;
   width: 38px;
   display: flex;
@@ -1842,6 +1849,16 @@ h2 > span {
 .detail-authors b {
   font-size: 13px;
   font-weight: 500;
+}
+.author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.author-info > span {
+  font-size: 11px;
+  color: var(--muted);
 }
 .detail-external-links {
   display: flex;
@@ -2937,4 +2954,20 @@ h2 > span {
 }
 .detail-stage {
   line-height: 1.8;
+}
+
+.projects-grid.projects-grid-expanded {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.project-preview-wrap.mobile {
+  background: #302719;
+  border-color: #594729;
+}
+.detail-main-preview .project-preview-wrap.mobile {
+  aspect-ratio: auto;
+}
+@media (max-width: 720px) {
+  .projects-grid.projects-grid-expanded {
+    grid-template-columns: 1fr;
+  }
 }

@@ -17,6 +17,8 @@ import {
   Wallet,
 } from "lucide-react";
 import type { Project } from "../data";
+import GestorizePreview from "./GestorizePreview";
+import JusExplicaPreview from "./JusExplicaPreview";
 
 type PreviewProps = {
   variant: NonNullable<Project["visual"]>;
@@ -29,11 +31,12 @@ export default function ProductPreview({
   compact = false,
   className = "",
 }: PreviewProps) {
+  if (variant === "mobile") return <GestorizePreview compact={compact} className={className} />;
   return (
     <div
       className={`product-preview ${variant} ${compact ? "compact" : ""} ${className}`}
       role="img"
-      aria-label={`Ilustração de interface de ${variant === "legal" ? "Gestão Jurídica" : variant === "schedule" ? "Pela Ordem" : "Lousa"}. Conteúdo de exemplo.`}
+      aria-label={`Ilustração de interface de ${variant === "legal" ? "Gestão Jurídica" : variant === "schedule" ? "Pela Ordem" : variant === "justice" ? "JusExplica" : "Lousa"}. Conteúdo de exemplo.`}
     >
       <div className="preview-chrome">
         <div className="window-dots">
@@ -46,7 +49,9 @@ export default function ProductPreview({
             ? "gestão jurídica"
             : variant === "schedule"
               ? "pela ordem"
-              : "lousa"}{" "}
+              : variant === "justice"
+                ? "jusexplica"
+                : "lousa"}{" "}
           / visão do produto
         </span>
         <PanelLeft size={11} />
@@ -55,6 +60,8 @@ export default function ProductPreview({
         <Legal />
       ) : variant === "schedule" ? (
         <Schedule />
+      ) : variant === "justice" ? (
+        <JusExplicaPreview />
       ) : (
         <Education />
       )}

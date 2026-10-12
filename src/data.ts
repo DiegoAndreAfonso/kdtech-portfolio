@@ -1,5 +1,5 @@
 export interface Project {
-  id: "gestao-juridica" | "pela-ordem" | "lousa" | "jusexplica";
+  id: "gestao-juridica" | "pela-ordem" | "lousa" | "jusexplica" | "gestorize-mobile";
   name: string;
   number: string;
   category?: string;
@@ -7,6 +7,9 @@ export interface Project {
   shortProblem?: string;
   problem?: string;
   solution?: string;
+  headings?: { context?: string; solution?: string; features?: string };
+  audience?: string;
+  businessModel?: string;
   benefits?: string[];
   features?: {
     title: string;
@@ -15,15 +18,18 @@ export interface Project {
   }[];
   flow?: string[];
   authors: string[];
+  participants?: { name: string; role: string }[];
   credit: string;
   origin?: string;
   stage?: string;
   technologies?: string[];
+  technologiesLabel?: string;
+  architecture?: string;
   limitations?: string[];
   images?: { src: string; alt: string; caption?: string }[];
   links?: { label: string; url: string }[];
   accent: string;
-  visual?: "legal" | "schedule" | "education";
+  visual?: "legal" | "schedule" | "education" | "justice" | "mobile";
 }
 
 export interface Person {
@@ -234,13 +240,175 @@ export const projects: Project[] = [
     visual: "education",
   },
   {
+    id: "gestorize-mobile",
+    name: "GestorizeMobile",
+    number: "04",
+    category: "Gestão empresarial no celular",
+    shortProblem: "Organizar clientes e produtos na rotina de pequenas empresas.",
+    summary:
+      "Um aplicativo de gestão para pequenas e médias empresas, com cadastros de clientes e produtos em uma interface mobile integrada a uma API Laravel.",
+    problem:
+      "Pequenas e médias empresas precisam manter informações de clientes, produtos e endereços organizadas, inclusive durante o trabalho fora do escritório. Consultar e atualizar esses registros pelo celular ajuda a reunir as informações da rotina.",
+    solution:
+      "O GestorizeMobile reúne cadastros de clientes e produtos em um aplicativo desenvolvido com React Native e Expo, conectado a uma API Laravel. A proposta também contempla fornecedores, funcionários, orçamentos e relatórios, cujos fluxos mobile ainda estão em desenvolvimento.",
+    benefits: [
+      "Consultar e atualizar cadastros durante o trabalho pelo celular.",
+      "Organizar produtos por categoria e unidade de medida.",
+      "Facilitar o preenchimento de endereços com consulta de CEP.",
+    ],
+    features: [
+      {
+        title: "Clientes PF e PJ",
+        description:
+          "Cadastro, consulta, edição e exclusão de clientes, com avatar e informações de endereço.",
+        status: "demonstrated",
+      },
+      {
+        title: "Catálogo de produtos",
+        description:
+          "Cadastro, consulta, edição e exclusão de produtos, com categoria, unidade de medida e imagem.",
+        status: "demonstrated",
+      },
+      {
+        title: "Endereços por CEP",
+        description:
+          "Consulta ao ViaCEP para apoiar o preenchimento dos dados de endereço.",
+        status: "demonstrated",
+      },
+      {
+        title: "Acesso e permissões",
+        description:
+          "Autenticação por token com Laravel Sanctum, encerramento e renovação de sessão, papéis e permissões de acesso.",
+        status: "demonstrated",
+      },
+      {
+        title: "Preferências de interface",
+        description:
+          "Tema claro ou escuro e opção de listas compactas para organizar a visualização no celular.",
+        status: "demonstrated",
+      },
+      {
+        title: "Expansão da gestão",
+        description:
+          "Os fluxos mobile de fornecedores, funcionários, orçamentos e relatórios ainda incluem telas ou dados demonstrativos e seguem em desenvolvimento.",
+        status: "planned",
+      },
+    ],
+    flow: [
+      "Entrar no aplicativo",
+      "Organizar o cadastro de clientes",
+      "Cadastrar produtos e suas categorias",
+      "Consultar e atualizar os registros pelo celular",
+    ],
+    authors: ["Diego André Afonso", "Kennedy Pinheiro"],
+    credit:
+      "Desenvolvido em coautoria por Diego André Afonso e Kennedy Pinheiro.",
+    stage: "Aplicativo e API em desenvolvimento.",
+    technologies: [
+      "React Native", "Expo", "TypeScript", "React Native Paper",
+      "Laravel", "PHP", "Laravel Sanctum", "Spatie Permission",
+    ],
+    limitations: [
+      "Fornecedores, funcionários, orçamentos e relatórios ainda usam listagens demonstrativas no aplicativo.",
+      "Os formulários de novo fornecedor, funcionário e orçamento e a exportação de relatórios ainda não estão implementados no mobile.",
+      "O repositório não apresenta uma demonstração pública do aplicativo; a prévia neste portfólio é uma ilustração de interface.",
+    ],
+    links: [
+      { label: "Ver repositório", url: "https://github.com/KennedyPinheiro/GestorizeMobile" },
+    ],
+    accent: "#fbbf24",
+    visual: "mobile",
+  },
+  {
     id: "jusexplica",
     name: "JusExplica",
-    number: "04",
+    number: "05",
+    category: "Comunicação jurídica acessível",
+    shortProblem: "Entender o que acontece em um processo judicial.",
+    summary:
+      "Uma proposta para ajudar as pessoas a entender e acompanhar seus processos, com notificações pelo WhatsApp e consultas em linguagem simples, por texto e áudio.",
+    problem:
+      "Termos técnicos e informações difíceis de compreender podem deixar as pessoas com dúvidas e insegurança sobre seus processos. Diferenças de escolaridade e necessidades de acessibilidade também dificultam a comunicação durante o atendimento jurídico.",
+    solution:
+      "O JusExplica propõe um assistente virtual jurídico com duas frentes: um notificador pelo WhatsApp para avisar sobre atualizações do processo e um chat complementar para consultar informações e esclarecer dúvidas. A ideia é explicar o que mudou, a situação atual e o próximo passo em linguagem simples, com respostas em texto e áudio.",
+    headings: {
+      context: "Entender o processo também faz parte do acesso à Justiça.",
+      solution: "A Justiça fala a sua língua.",
+      features: "Informação que chega e faz sentido.",
+    },
+    audience:
+      "Pessoas que recebem atendimento jurídico e precisam acompanhar seus processos, especialmente quem encontra dificuldade com a linguagem técnica. A proposta busca facilitar a comunicação entre cidadãos e os serviços de Justiça.",
+    businessModel:
+      "O modelo apresentado é B2G, voltado à contratação por instituições públicas, com perspectiva de expansão para B2B, atendendo organizações privadas. A proposta busca investimento para avançar no desenvolvimento.",
+    benefits: [
+      "Facilitar a compreensão das informações e dos termos jurídicos.",
+      "Manter o cidadão informado sobre as novidades do seu processo.",
+      "Oferecer explicações por texto e áudio em um canal familiar.",
+      "Reduzir dúvidas e insegurança durante o acompanhamento do caso.",
+    ],
+    features: [
+      {
+        title: "Notificações pelo WhatsApp",
+        description:
+          "A proposta prevê o envio automático de avisos quando houver novidades no andamento do processo.",
+      },
+      {
+        title: "Explicações em linguagem simples",
+        description:
+          "Apresentação das informações do caso de forma compreensível, explicando os termos técnicos e a situação atual.",
+      },
+      {
+        title: "Texto e áudio",
+        description:
+          "Respostas nos dois formatos para que a pessoa possa ler ou ouvir a explicação. O fluxo apresentado também considera perguntas por áudio.",
+      },
+      {
+        title: "Chat de consulta",
+        description:
+          "Um canal complementar ao notificador para perguntar sobre o processo e entender seus próximos passos.",
+      },
+      {
+        title: "Consulta às informações processuais",
+        description:
+          "O fluxo proposto utiliza um identificador do processo para localizar os dados e prevê integração com o Eproc.",
+      },
+    ],
+    flow: [
+      "A pessoa entra em contato pelo WhatsApp",
+      "Informa um dado para identificar o processo",
+      "O sistema consulta as informações do caso",
+      "As novidades são explicadas em texto e áudio",
+      "A pessoa usa o chat complementar para tirar dúvidas sobre o processo",
+    ],
     authors: ["Kennedy Pinheiro"],
-    credit: "Desenvolvido por Kennedy Pinheiro.",
+    participants: [
+      { name: "Arthur Ramalho dos Anjos", role: "Estratégia" },
+      { name: "Vitória Gonçalvez", role: "Marketing e vendas" },
+      { name: "Kennedy Pinheiro Xavier", role: "Tecnologia" },
+      { name: "Guilherme Silva Amaral", role: "Tecnologia" },
+      { name: "Rhenam Mattos", role: "Operacional" },
+      { name: "Nilmar Aguilar Gonçalves", role: "Finanças" },
+    ],
+    credit:
+      "Criado pela equipe do JusExplica, com participação de Kennedy Pinheiro na tecnologia.",
     origin: "Desenvolvido no mesmo contexto de hackathon do Pela Ordem.",
-    accent: "#94a3b8",
+    stage:
+      "Proposta desenvolvida no hackathon, apresentada com fluxos e interfaces ilustrativas.",
+    technologiesLabel: "ARQUITETURA PROPOSTA",
+    technologies: [
+      "WhatsApp",
+      "Eproc",
+      "Faster-Whisper",
+      "Modelo de linguagem",
+      "Piper",
+    ],
+    architecture:
+      "O desenho técnico considera entrada por texto ou áudio, transcrição de fala com Faster-Whisper, processamento por um modelo de linguagem e geração de voz com Piper. A consulta ao Eproc e as notificações pelo WhatsApp fazem parte da integração prevista.",
+    limitations: [
+      "Os materiais apresentam a proposta de funcionamento; não permitem confirmar a operação das integrações em produção.",
+    ],
+    accent: "#6ee7b7",
+    visual: "justice",
   },
 ];
 
@@ -250,14 +418,14 @@ export const people: Person[] = [
     name: "Diego André Afonso",
     initials: "DA",
     role: "Desenvolvimento de software",
-    projectIds: ["gestao-juridica", "pela-ordem", "lousa"],
+    projectIds: ["gestao-juridica", "pela-ordem", "lousa", "gestorize-mobile"],
   },
   {
     id: "kennedy",
     name: "Kennedy Pinheiro",
     initials: "KP",
     role: "Desenvolvimento de software",
-    projectIds: ["gestao-juridica", "jusexplica", "lousa"],
+    projectIds: ["gestao-juridica", "jusexplica", "lousa", "gestorize-mobile"],
   },
   {
     id: "alice",

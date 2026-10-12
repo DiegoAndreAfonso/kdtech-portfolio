@@ -18,6 +18,23 @@ Os listeners novos aceitam apenas conexões locais. O Tunnel fornece o acesso HT
 
 ## Preparar uma release
 
+Para atualizar somente o portfólio já instalado, registrar as alterações da fonte, compilar para o domínio próprio e gerar um pacote exclusivo:
+
+~~~bash
+SITE_ORIGIN=https://kdtech.advogadosmca.com.br npm run build
+python3 deploy/pack.py --only kdtech --output /tmp/kdtech-update
+bash deploy/install-static.sh --validate-only --only kdtech /tmp/kdtech-update
+scp -r /tmp/kdtech-update server@192.168.15.133:~/deploy/
+~~~
+
+No terminal SSH do administrador:
+
+~~~bash
+sudo bash /home/server/deploy/kdtech-update/install-static.sh --only kdtech /home/server/deploy/kdtech-update
+~~~
+
+Esse modo exige uma instalação existente, cria uma release completa e troca somente o link `/srv/kdtech/current`. A configuração Nginx e os outros serviços são preservados. A conferência compara as páginas e os arquivos JavaScript/CSS com a release; uma falha restaura o link anterior. Os dados da Gestão Jurídica e do Atendimento não fazem parte do pacote. A proposta de hub da raiz é uma publicação independente.
+
 Compilar o portfólio com o endereço final:
 
 ~~~bash

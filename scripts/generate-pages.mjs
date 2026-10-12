@@ -25,16 +25,16 @@ function pageMetadata(template, title, description, pathname, image) {
   let page = template
     .replace(/<title>.*?<\/title>/, `<title>${escape(title)}</title>`)
     .replace(
-      /(<meta name="description" content=")[^"]*("\s*\/?>)/,
-      `$1${escape(description)}$2`,
+      /(<meta\s+name="description"\s+content=")[^"]*("\s*\/?>)/,
+      (_, start, end) => `${start}${escape(description)}${end}`,
     )
     .replace(
       /(<meta property="og:title" content=")[^"]*("\s*\/?>)/,
       `$1${escape(title)}$2`,
     )
     .replace(
-      /(<meta property="og:description" content=")[^"]*("\s*\/?>)/,
-      `$1${escape(description)}$2`,
+      /(<meta\s+property="og:description"\s+content=")[^"]*("\s*\/?>)/,
+      (_, start, end) => `${start}${escape(description)}${end}`,
     );
   if (origin) {
     const url = escape(new URL(pathname, origin).href);

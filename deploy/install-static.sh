@@ -2,13 +2,36 @@
 set -euo pipefail
 
 validation_only=0
-if [ "$#" -eq 2 ] && [ "$1" = "--validate-only" ]; then
-    validation_only=1
-    bundle_dir=$2
-elif [ "$#" -eq 1 ] && [ "$1" != "--validate-only" ]; then
-    bundle_dir=$1
-else
-    printf 'Uso: sudo bash %s DIRETORIO_DO_PACOTE\nValidação: bash %s --validate-only DIRETORIO_DO_PACOTE\n' "$0" "$0" >&2
+only_project=
+bundle_dir=
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --validate-only)
+            [ "$validation_only" -eq 0 ] || { printf 'Opção repetida: %s\n' "$1" >&2; exit 2; }
+            validation_only=1
+            shift
+            ;;
+        --only)
+            [ "$#" -ge 2 ] && [ "$2" = "kdtech" ] && [ -z "$only_project" ] || {
+                printf 'A seleção --only aceita somente kdtech, uma vez.\n' >&2
+                exit 2
+            }
+            only_project=$2
+            shift 2
+            ;;
+        -*)
+            printf 'Opção desconhecida: %s\n' "$1" >&2
+            exit 2
+            ;;
+        *)
+            [ -z "$bundle_dir" ] || { printf 'Informe somente um diretório de pacote.\n' >&2; exit 2; }
+            bundle_dir=$1
+            shift
+            ;;
+    esac
+done
+if [ -z "$bundle_dir" ]; then
+    printf 'Uso: sudo bash %s [--only kdtech] DIRETORIO_DO_PACOTE\nValidação: bash %s --validate-only [--only kdtech] DIRETORIO_DO_PACOTE\n' "$0" "$0" >&2
     exit 2
 fi
 if [ "$validation_only" -eq 0 ] && [ "$EUID" -ne 0 ]; then
@@ -20,7 +43,7 @@ command -v python3 >/dev/null || {
     exit 1
 }
 
-exec python3 - "$bundle_dir" "$validation_only" <<'PY'
+exec python3 - "$bundle_dir" "$validation_only" "$only_project" <<'PY'
 import fcntl
 import hashlib
 import io
@@ -39,6 +62,8 @@ import urllib.error
 import urllib.request
 import uuid
 from datetime import datetime, timezone
+from html.parser import HTMLParser
+from urllib.parse import unquote, urlsplit
 
 NGINX_CONFIG = """# Inclua estes blocos no contexto http da configuração existente.
 # As portas locais atendem apenas às duas novas origens.
@@ -147,7 +172,7 @@ def archive_members(data):
     return members
 
 
-def validate_bundle(bundle):
+def validate_bundle(bundle, selected):
     raw = regular_file_bytes(bundle / "manifest.json", 1024 * 1024)
     records = json.loads(raw)
     if not isinstance(records, list):
@@ -159,7 +184,7 @@ def validate_bundle(bundle):
         project = record.get("project")
         if not isinstance(project, str):
             fail("Identificador de projeto inválido no manifesto.")
-        if project not in PROJECTS:
+        if project not in selected:
             continue
         if project in validated:
             fail("Projeto estático duplicado no manifesto.")
@@ -177,8 +202,9 @@ def validate_bundle(bundle):
             fail(f"Checksum não confere para {project}.")
         members = archive_members(data)
         validated[project] = (record, data, members)
-    if set(validated) != set(PROJECTS):
-        fail("O manifesto precisa incluir uma entrada para KDTech e uma para Lousa.")
+    if set(validated) != set(selected):
+        names = ", ".join(selected)
+        fail(f"O manifesto precisa incluir uma entrada para cada projeto selecionado: {names}.")
     return validated
 
 
@@ -265,21 +291,60 @@ def run(*arguments):
     subprocess.run(arguments, check=True)
 
 
+class IndexAssets(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.assets = {}
+
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        if tag == "script" and attributes.get("src"):
+            self.assets[attributes["src"]] = {"application/javascript", "text/javascript"}
+        elif (tag == "link" and "stylesheet" in attributes.get("rel", "").lower().split()
+              and attributes.get("href")):
+            self.assets[attributes["href"]] = {"text/css"}
+
+
 def verify_sites(releases):
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-    for project, (hostname, port) in PROJECTS.items():
-        release = releases[project]
-        checks = [
-            ("/index.html", release / "index.html"),
-            ("/projetos/lousa", release / "projetos/lousa/index.html")
-            if project == "kdtech" else ("/login", release / "index.html"),
-        ]
-        for route, expected in checks:
+    for project, release in releases.items():
+        hostname, port = PROJECTS[project]
+        checks = [("/index.html", release / "index.html", {"text/html"})]
+        if project == "kdtech":
+            pages = sorted((release / "projetos").glob("*/index.html"))
+            if not pages:
+                fail("A release KDTech precisa conter páginas estáticas dos projetos.")
+            checks.extend(
+                ("/" + str(page.parent.relative_to(release)) + "/", page, {"text/html"})
+                for page in pages
+            )
+        else:
+            checks.append(("/login", release / "index.html", {"text/html"}))
+        parser = IndexAssets()
+        parser.feed((release / "index.html").read_text(encoding="utf-8"))
+        if not any("text/css" in types for types in parser.assets.values()) or not any(
+            "application/javascript" in types for types in parser.assets.values()
+        ):
+            fail(f"O HTML de {project} precisa referenciar JavaScript e CSS do build.")
+        for asset, types in parser.assets.items():
+            parsed = urlsplit(asset)
+            decoded = unquote(parsed.path)
+            if (parsed.scheme or parsed.netloc or not decoded.startswith("/assets/")
+                    or ".." in decoded.split("/") or "\\" in decoded
+                    or any(ord(character) < 32 for character in decoded)):
+                fail(f"Referência de asset inesperada no HTML de {project}.")
+            expected = release / decoded.lstrip("/")
+            if not expected.is_file() or expected.is_symlink():
+                fail(f"O build de {project} referencia um asset ausente ou inválido.")
+            checks.append((asset, expected, types))
+        for route, expected, types in checks:
             request = urllib.request.Request(
                 f"http://127.0.0.1:{port}{route}", headers={"Host": hostname}
             )
             with opener.open(request, timeout=3) as response:
                 actual = response.read(MAX_UNPACKED_BYTES + 1)
+                if response.status != 200 or response.headers.get_content_type() not in types:
+                    fail(f"Resposta HTTP ou MIME inesperado na origem de {project}: {route}")
             if hashlib.sha256(actual).digest() != hashlib.sha256(expected.read_bytes()).digest():
                 fail(f"A origem local de {project} não serviu a versão esperada.")
         request = urllib.request.Request(
@@ -299,7 +364,9 @@ def main():
     bundle = Path(sys.argv[1]).resolve(strict=True)
     if not bundle.is_dir():
         fail("Informe o diretório do pacote.")
-    validated = validate_bundle(bundle)
+    only = sys.argv[3] == "kdtech"
+    selected = {"kdtech": PROJECTS["kdtech"]} if only else PROJECTS
+    validated = validate_bundle(bundle, selected)
     if sys.argv[2] == "1":
         for project, (record, _, _) in validated.items():
             print(f"{project}: checksum e conteúdo válidos (commit {record['commit']})")
@@ -331,19 +398,37 @@ def main():
             not enabled.is_symlink() or enabled.resolve() != available
         ):
             fail("Já existe uma entrada habilitada diferente para kdtech-static.")
-        for project in PROJECTS:
+        if only:
+            if not available.is_file() or not enabled.is_symlink():
+                fail("--only kdtech exige o vhost existente e já habilitado.")
+            metadata = available.lstat()
+            if metadata.st_uid != 0 or metadata.st_mode & 0o022 or enabled.lstat().st_uid != 0:
+                fail("O vhost existente precisa pertencer a root e ter permissões seguras.")
+            original_config = regular_file_bytes(available, 1024 * 1024)
+            original_enabled = os.readlink(enabled)
+        for project in selected:
             base = Path("/srv") / project
-            safe_directory(base, create=True)
-            safe_directory(base / "releases", create=True)
+            safe_directory(base, create=not only)
+            safe_directory(base / "releases", create=not only)
             current = base / "current"
             if os.path.lexists(current) and not current.is_symlink():
                 fail(f"{current} precisa ser um link; nenhum arquivo será removido.")
+            if only:
+                if not current.is_symlink() or current.lstat().st_uid != 0:
+                    fail("--only kdtech exige um link current existente e pertencente a root.")
+                previous_release = current.resolve(strict=True)
+                try:
+                    previous_release.relative_to(base / "releases")
+                except ValueError:
+                    fail("O link current precisa apontar para uma release local do KDTech.")
+                safe_directory(previous_release)
+                verify_sites({project: previous_release})
         transaction = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:12]
         backups = Path("/srv/kdtech/deployment-backups")
         safe_directory(backups, create=True, mode=0o700)
         backup = backups / transaction
         backup.mkdir(mode=0o700)
-        states = {
+        states = {} if only else {
             available: snapshot(available, backup / "nginx-previous.conf"),
             enabled: snapshot(enabled, backup / "nginx-enabled"),
         }
@@ -366,12 +451,14 @@ def main():
             0o600,
         )
         try:
-            atomic_write(available, NGINX_CONFIG.encode())
-            atomic_symlink(enabled, available)
+            if not only:
+                atomic_write(available, NGINX_CONFIG.encode())
+                atomic_symlink(enabled, available)
             for project, release in releases.items():
                 atomic_symlink(Path("/srv") / project / "current", release)
-            run("nginx", "-t")
-            run("systemctl", "reload", "nginx")
+            if not only:
+                run("nginx", "-t")
+                run("systemctl", "reload", "nginx")
             for attempt in range(5):
                 try:
                     verify_sites(releases)
@@ -380,6 +467,11 @@ def main():
                     if attempt == 4:
                         raise
                     time.sleep(1)
+            if only and (
+                regular_file_bytes(available, 1024 * 1024) != original_config
+                or not enabled.is_symlink() or os.readlink(enabled) != original_enabled
+            ):
+                fail("O vhost mudou durante a atualização; a release não será confirmada.")
         except BaseException:
             print("Instalação não confirmada. Restaurando configuração e links anteriores.", file=sys.stderr)
             rollback_errors = []
@@ -388,11 +480,12 @@ def main():
                     restore(path, state)
                 except Exception as error:
                     rollback_errors.append(f"{path}: {error}")
-            try:
-                run("nginx", "-t")
-                run("systemctl", "reload", "nginx")
-            except Exception as error:
-                rollback_errors.append(str(error))
+            if not only:
+                try:
+                    run("nginx", "-t")
+                    run("systemctl", "reload", "nginx")
+                except Exception as error:
+                    rollback_errors.append(str(error))
             if rollback_errors:
                 print("Rollback requer revisão manual. Backups: " + str(backup), file=sys.stderr)
                 for error in rollback_errors:
