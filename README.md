@@ -33,6 +33,7 @@ Não versione `node_modules/`, `dist/`, arquivos `.env` ou credenciais. Preserve
 - Textos, projetos, participantes e créditos: `src/data.ts`.
 - Cores, tipografia, espaçamento e demais tokens visuais: `src/styles.css`.
 - Imagens reais: adicione arquivos otimizados em `public/` e configure os campos opcionais `src`, `alt` e `caption` no projeto correspondente. As prévias atuais são ilustrações de interface, identificadas como tal; substitua-as por capturas reais quando disponíveis.
+- Equipe: os dois perfis em `people` reúnem biografia, formação, competências agrupadas e links profissionais. As fotos em `public/images/team/` correspondem aos avatares públicos verificados dos respectivos perfis no GitHub; imagens indisponíveis dão lugar às iniciais. Alice Figueira permanece nos créditos do Lousa.
 - Contatos: preencha apenas os canais confirmados em `contactConfig`, em `src/data.ts`: `whatsapp`, `email`, `github` e `linkedin`. Configure `siteUrl` quando houver domínio definitivo. Campos ausentes são omitidos.
 
 A KDTech ainda não dispõe de canais públicos de contato. Não há serviço de envio de mensagens. A seção de contato apresenta essa situação sem simular envio. Dados opcionais vazios, como biografias, fotos e links, não geram seções públicas.
@@ -48,8 +49,9 @@ As páginas individuais são `/projetos/gestao-juridica`, `/projetos/pela-ordem`
 - Canais de contato reais e domínio definitivo.
 - Confirmação do estágio de implementação e das integrações do JusExplica.
 - Nomes dos demais integrantes do Pela Ordem.
-- Links reais de demonstrações e repositórios, além de capturas dos projetos.
-- Biografias curtas, fotos e links profissionais opcionais de Diego e Kennedy.
+- Capturas reais e links públicos adicionais dos projetos. Gestão Jurídica exige login; Pela Ordem tem demonstração pública sem login. Repositórios privados não são exibidos nos perfis públicos.
+
+Os perfis apresentam Diego André Afonso como desenvolvedor full stack com atuação em requisitos, planejamento e colaboração, e Kennedy Pinheiro Xavier como desenvolvedor full stack e designer UX/UI. A formação e a atuação atual de Kennedy seguem seu [README público](https://github.com/KennedyPinheiro/KennedyPinheiro/blob/main/README.md). O gráfico financeiro da Gestão Jurídica usa dados exemplificativos; não representa um módulo financeiro operacional.
 
 Os créditos seguem as informações fornecidas. O Lousa é apresentado como protótipo de frontend em React, TypeScript e Vite com persistência local: autenticação, e-mail, assinatura e aplicativo são simulados; backend e compartilhamento de dados entre dispositivos são etapas futuras. O controle nativo do computador durante avaliações não está implementado.
 

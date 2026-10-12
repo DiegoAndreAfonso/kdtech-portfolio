@@ -21,7 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { contactConfig, people, projects } from "./data";
-import type { Project } from "./data";
+import type { Person, Project } from "./data";
 import ProductPreview from "./components/ProductPreview";
 
 const navItems = [
@@ -511,6 +511,32 @@ function About() {
   );
 }
 
+function PersonPortrait({ person }: { person: Person }) {
+  const [unavailable, setUnavailable] = useState(false);
+  useEffect(() => setUnavailable(false), [person.photo]);
+
+  if (!person.photo || unavailable) {
+    return (
+      <span className="person-portrait person-initials" aria-hidden="true">
+        {person.initials}<i>.</i>
+      </span>
+    );
+  }
+
+  return (
+    <img
+      className="person-portrait person-photo"
+      src={person.photo}
+      alt={person.name}
+      width={96}
+      height={96}
+      loading="lazy"
+      decoding="async"
+      onError={() => setUnavailable(true)}
+    />
+  );
+}
+
 function People() {
   return (
     <section className="people-section section" id="pessoas">
@@ -532,23 +558,32 @@ function People() {
           {people.map((person) => (
             <article className={`person ${person.id}`} key={person.id}>
               <div className="person-top">
-                {person.photo ? (
-                  <img
-                    className="person-photo"
-                    src={person.photo}
-                    alt={person.name}
-                    loading="lazy"
-                  />
-                ) : (
-                  <span className="person-initials" aria-hidden="true">
-                    {person.initials}
-                    <i>.</i>
-                  </span>
-                )}
-                <span className="person-role">{person.role}</span>
+                <PersonPortrait person={person} />
+                <div className="person-heading">
+                  <h3>{person.displayName || person.name}</h3>
+                  {person.displayName && (
+                    <span className="person-full-name">{person.name}</span>
+                  )}
+                  <p className="person-role">{person.role}</p>
+                </div>
               </div>
-              <h3>{person.name}</h3>
-              {person.bio && <p>{person.bio}</p>}
+              <p className="person-education">
+                {person.education}
+                {person.location && <span>{person.location}</span>}
+              </p>
+              <p>{person.bio}</p>
+              <p>{person.activities}</p>
+              <ul className="person-focus" aria-label="Áreas em destaque">
+                {person.focus.map((area) => <li key={area}>{area}</li>)}
+              </ul>
+              <dl className="person-skills">
+                {person.skills.map((group) => (
+                  <div key={group.label}>
+                    <dt>{group.label}</dt>
+                    <dd>{group.items.join(" · ")}</dd>
+                  </div>
+                ))}
+              </dl>
               <span className="person-project-label">PARTICIPAÇÃO EM</span>
               <div className="person-projects">
                 {person.projectIds.map((id) => (
@@ -985,7 +1020,9 @@ function Detail({ project }: { project: Project }) {
               <p>{project.credit}</p>
               <div className="detail-authors">
                 {participants.map(({ name, role }) => {
-                  const person = people.find((p) => p.name === name);
+                  const person = people.find(
+                    (p) => p.name === name || p.displayName === name,
+                  );
                   return (
                     <div key={name}>
                       <span className="author-avatar" aria-hidden="true">

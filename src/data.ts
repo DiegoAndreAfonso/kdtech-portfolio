@@ -35,10 +35,16 @@ export interface Project {
 export interface Person {
   id: string;
   name: string;
+  displayName?: string;
   initials: string;
   role: string;
   projectIds: Project["id"][];
-  bio?: string;
+  bio: string;
+  education: string;
+  location?: string;
+  activities: string;
+  focus: string[];
+  skills: { label: string; items: string[] }[];
   photo?: string;
   links?: { label: string; url: string }[];
 }
@@ -59,15 +65,15 @@ export const projects: Project[] = [
     category: "Gestão de escritórios de advocacia",
     shortProblem: "Informações espalhadas na rotina dos escritórios.",
     summary:
-      "Clientes, casos, agenda e finanças reunidos para organizar a rotina de um escritório de advocacia.",
+      "Gestão de clientes, casos e agenda para organizar a rotina de um escritório de advocacia.",
     problem:
       "Na rotina de um escritório de advocacia, informações sobre clientes, casos, compromissos e finanças podem ficar espalhadas. Essa fragmentação dificulta a organização e o acompanhamento do trabalho.",
     solution:
-      "A proposta é centralizar as informações do escritório em uma solução digital, reunindo gestão de clientes e casos, agenda, organização financeira, publicações e preferências de uso.",
+      "A aplicação reúne gestão de clientes e casos, agenda, publicações e preferências de uso. A interface inclui também um gráfico financeiro demonstrativo, com dados exemplificativos.",
     benefits: [
       "Facilitar a consulta de informações sobre clientes e casos.",
       "Apoiar a organização de compromissos e o acompanhamento do trabalho.",
-      "Reunir informações financeiras e institucionais na rotina do escritório.",
+      "Centralizar informações para acompanhar a rotina do escritório.",
     ],
     features: [
       {
@@ -81,9 +87,9 @@ export const projects: Project[] = [
           "Uma visão dos compromissos para apoiar o planejamento da rotina.",
       },
       {
-        title: "Organização financeira",
+        title: "Visualização financeira demonstrativa",
         description:
-          "Reunião das informações financeiras para facilitar seu acompanhamento.",
+          "Gráfico com dados exemplificativos de receitas e despesas; não representa um módulo financeiro operacional.",
       },
       {
         title: "Publicações e presença institucional",
@@ -98,6 +104,8 @@ export const projects: Project[] = [
     ],
     authors: ["Diego André Afonso", "Kennedy Pinheiro"],
     credit: "Desenvolvido por Diego André Afonso e Kennedy Pinheiro.",
+    technologies: ["Next.js", "React", "TypeScript", "Material UI", "Laravel", "MySQL"],
+    links: [{ label: "Acessar o sistema (com login)", url: "https://advogadosmca.com.br/" }],
     accent: "#38bdf8",
     visual: "legal",
   },
@@ -108,11 +116,11 @@ export const projects: Project[] = [
     category: "Organização de pautas de audiências",
     shortProblem: "Planilhas, horários e possíveis conflitos na pauta.",
     summary:
-      "Uma proposta para cruzar dados de planilhas, identificar possíveis conflitos de horários e organizar pautas de audiências.",
+      "Organização de pautas de audiências a partir de planilhas, considerando impedimentos e possíveis conflitos de horários.",
     problem:
       "Preparar uma pauta de audiências exige cruzar informações de planilhas, lidar com dados extraídos do Eproc e conferir possíveis conflitos de horários envolvendo advogados. Esse trabalho demanda tarefas repetitivas e atenção à conferência.",
     solution:
-      "Processar os dados fornecidos em planilhas, apoiar a identificação de possíveis conflitos e organizar a marcação das audiências em intervalos de 15 minutos.",
+      "Processa as planilhas e organiza as audiências em intervalos de 15 minutos, agrupando as de cada advogado em horários consecutivos no mesmo dia e período. Considera impedimentos e sinaliza conflito quando não há espaço para agendar o bloco inteiro.",
     benefits: [
       "Reduzir tarefas repetitivas no cruzamento das informações.",
       "Apoiar a conferência de possíveis conflitos de horários.",
@@ -137,7 +145,7 @@ export const projects: Project[] = [
       {
         title: "Organização da pauta",
         description:
-          "Proposta de marcação de audiências em intervalos de 15 minutos.",
+          "Audiências em blocos consecutivos por advogado, com exportação da pauta em XLSX.",
       },
     ],
     flow: [
@@ -153,7 +161,10 @@ export const projects: Project[] = [
     limitations: [
       "O fluxo utiliza planilhas e dados extraídos do Eproc; não representa uma integração direta com a API do sistema.",
       "A identificação de possíveis conflitos apoia a conferência e não garante a ausência total de conflitos.",
+      "Sem login: planilhas e processos ficam na memória da aba e são descartados ao recarregar ou fechar a página.",
     ],
+    technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "SheetJS", "ExcelJS"],
+    links: [{ label: "Experimentar o Pela Ordem", url: "https://pelaordem.advogadosmca.com.br/" }],
     accent: "#a3e635",
     visual: "schedule",
   },
@@ -417,22 +428,45 @@ export const people: Person[] = [
     id: "diego",
     name: "Diego André Afonso",
     initials: "DA",
-    role: "Desenvolvimento de software",
+    role: "Desenvolvedor Full Stack | Gestão de Projetos de Software",
+    bio:
+      "Atua no desenvolvimento de soluções pela KDTech, em parceria com Kennedy Pinheiro, participando do levantamento de requisitos, planejamento de funcionalidades e implementação de aplicações web. Seu trabalho conecta as necessidades do cliente ao desenvolvimento de interfaces, APIs e bancos de dados.",
+    education: "Estudante de Análise e Desenvolvimento de Sistemas no IFNMG — Campus Almenara.",
+    activities: "Também desenvolve aplicações mobile. Sua atuação em gestão de projetos envolve organização de requisitos, planejamento e colaboração.",
+    focus: ["Desenvolvimento full stack", "Requisitos e planejamento"],
+    skills: [
+      { label: "Frontend", items: ["JavaScript", "TypeScript", "React", "Next.js", "HTML", "CSS"] },
+      { label: "Backend", items: ["PHP", "Laravel", "APIs REST"] },
+      { label: "Banco de dados", items: ["MySQL"] },
+      { label: "Mobile", items: ["React Native"] },
+      { label: "Ferramentas", items: ["Git", "GitHub", "Linux", "Figma"] },
+    ],
+    photo: "/images/team/diego-andre-afonso.jpg",
     projectIds: ["gestao-juridica", "pela-ordem", "lousa", "gestorize-mobile"],
+    links: [{ label: "Ver GitHub", url: "https://github.com/DiegoAndreAfonso" }],
   },
   {
     id: "kennedy",
-    name: "Kennedy Pinheiro",
+    name: "Kennedy Pinheiro Xavier",
+    displayName: "Kennedy Pinheiro",
     initials: "KP",
-    role: "Desenvolvimento de software",
+    role: "Desenvolvedor Full Stack e Designer UX/UI",
+    bio:
+      "Combina desenvolvimento web e mobile com criação de interfaces e identidades visuais, integrando frontend, backend e aplicações por meio de APIs.",
+    education: "Estudante de Análise e Desenvolvimento de Sistemas no IFNMG.",
+    location: "Almenara — MG",
+    activities: "Estagiário em desenvolvimento web no IFNMG e freelancer em design gráfico.",
+    focus: ["React", "TypeScript", "Laravel", "Design de interfaces"],
+    skills: [
+      { label: "Frontend", items: ["JavaScript", "TypeScript", "React", "HTML", "CSS", "Tailwind CSS"] },
+      { label: "Backend e dados", items: ["Node.js", "PHP", "Laravel", "MySQL", "PostgreSQL", "MongoDB"] },
+      { label: "Mobile", items: ["React Native"] },
+      { label: "Design", items: ["Figma", "Photoshop", "Illustrator", "Canva"] },
+      { label: "Ferramentas", items: ["Git", "GitHub", "VS Code", "Docker", "Postman", "Linux"] },
+    ],
+    photo: "/images/team/kennedy-pinheiro.jpg",
     projectIds: ["gestao-juridica", "jusexplica", "lousa", "gestorize-mobile"],
-  },
-  {
-    id: "alice",
-    name: "Alice Figueira",
-    initials: "AF",
-    role: "Colaboração no Lousa",
-    projectIds: ["lousa"],
+    links: [{ label: "Ver GitHub", url: "https://github.com/KennedyPinheiro" }],
   },
 ];
 

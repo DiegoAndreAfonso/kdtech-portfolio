@@ -7,3 +7,6 @@ dist/
 
 # Checkout independente do Pela Ordem.
 projects/pela-ordem/
+
+# Checkout independente do perfil pessoal.
+projects/perfil-diego/
