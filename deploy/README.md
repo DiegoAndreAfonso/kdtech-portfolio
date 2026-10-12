@@ -81,7 +81,9 @@ O Atendimento agora usa CSRF nos formulários, sessões com cookies seguros e au
 
 ## Pela Ordem
 
-O repositório correto é `gabrielportodev/hackthon`, distinto do Atendimento em PHP. A [hospedagem do Pela Ordem](pela-ordem/README.md) está instalada com o commit `e0866e8a253906c0cfdd726cca01a41081f47d9d` da branch `feat/hospedagem-sem-persistencia`, sincronizada com o repositório privado. Usa um serviço Node.js próprio e a porta local 8113, com acesso público sem login e sem persistência de planilhas ou processos. Os resultados ficam na aba aberta e são descartados ao recarregar ou fechar; devem ser exportados antes disso. Sua instalação e publicação no Tunnel preservaram os serviços atuais.
+O repositório correto é `gabrielportodev/hackthon`, distinto do Atendimento em PHP. A [hospedagem do Pela Ordem](pela-ordem/README.md) está instalada com o commit `ce0539f1e7ea0077b5cfeb62e7216a4ff1ee1deb` da branch `feat/hospedagem-sem-persistencia`, sincronizada com o repositório privado. Usa um serviço Node.js próprio e a porta local 8113, com acesso público sem login e sem persistência de planilhas ou processos. Os resultados ficam na aba aberta e são descartados ao recarregar ou fechar; devem ser exportados antes disso. Sua instalação e publicação no Tunnel preservaram os serviços atuais.
+
+A atualização instalada em 10/10/2026 mantém as audiências de cada advogado em um bloco de horários consecutivos de 15 minutos, no mesmo dia e período, com até 12 audiências. Quando não há espaço, tenta mover o bloco inteiro para um período disponível; se isso não for possível, sinaliza conflito em todas as audiências do bloco e não atribui horários. Importar novos processos ou salvar impedimentos invalida a pauta anterior, que precisa ser gerada novamente antes da exportação. A versão instalada foi conferida por HTTP local e HTTPS público, incluindo a rejeição de exportações com processos novos ou em conflito e a preservação dos outros serviços e da raiz.
 
 ## Hub na raiz: prévia
 
