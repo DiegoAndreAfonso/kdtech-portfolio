@@ -6,6 +6,8 @@ As cinco rotas abaixo foram publicadas em 10/10/2026. Foram conferidos o DNS pú
 
 Os scripts de hospedagem estão na branch `feat/hospedagem-servidor` deste repositório. As próximas releases reutilizam as rotas existentes no Tunnel.
 
+O portfólio foi sincronizado no servidor em 12/10/2026 com o commit `591e094c89afbb2bd8fe0f5a766ec50e151404cc`, incluindo Gestão Jurídica, Pela Ordem, Lousa, GestorizeMobile e o conteúdo atualizado do JusExplica. A release ativa é `/srv/kdtech/releases/20261012T172726Z-99e613970d39-591e094c89af`; os backups estão em `/srv/kdtech/deployment-backups/20261012T172726Z-99e613970d39`. Foram conferidas as cinco páginas por HTTPS, seus metadados e os bytes dos arquivos CSS/JavaScript. A Cloudflare acrescenta seu beacon de métricas ao HTML público. A configuração Nginx e os links dos outros serviços permaneceram iguais; a rota da raiz foi preservada. GestorizeMobile e JusExplica são páginas do portfólio, sem instalação de novos aplicativos no servidor.
+
 | Projeto | Endereço público | Serviço no servidor |
 | --- | --- | --- |
 | KDTech | [kdtech.advogadosmca.com.br](https://kdtech.advogadosmca.com.br/) | http://127.0.0.1:8111 |
