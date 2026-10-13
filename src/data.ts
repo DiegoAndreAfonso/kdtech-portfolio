@@ -441,7 +441,7 @@ export const people: Person[] = [
       { label: "Mobile", items: ["React Native"] },
       { label: "Ferramentas", items: ["Git", "GitHub", "Linux", "Figma"] },
     ],
-    photo: "/images/team/diego-andre-afonso.jpg",
+    photo: "/images/team/diego-andre-afonso.jpg?v=20261013",
     projectIds: ["gestao-juridica", "pela-ordem", "lousa", "gestorize-mobile"],
     links: [{ label: "Ver GitHub", url: "https://github.com/DiegoAndreAfonso" }],
   },
